@@ -30,6 +30,7 @@ QEMU_FLAGS			= -machine virt -cpu rv$(TARGET_XLEN),pmp=false -smp 1 -gdb tcp::12
 RUN					= qemu-system-riscv$(TARGET_XLEN) $(QEMU_FLAGS) 
 
 
+
 # overwrite target-specific values
 ifeq ($(TARGET), qemu-32i)
 	CFLAGS				+= -march=rv$(TARGET_XLEN)i_zicsr -mabi=ilp32
@@ -59,6 +60,7 @@ ifeq ($(TARGET), qemu-32ec)
 	CFLAGS				+= -march=rv$(TARGET_XLEN)ec_zicsr -mabi=ilp32e
 endif 
 
+
 ifeq ($(TARGET), olimex-ch32v003-uart)
 	FLASH_START			= 0x00000000
 	FLASH_SIZE			= 16K
@@ -66,6 +68,12 @@ ifeq ($(TARGET), olimex-ch32v003-uart)
 	RAM_SIZE			= 2K
 	CFLAGS				+= -march=rv$(TARGET_XLEN)ec_zicsr -mabi=ilp32e
 endif 
+
+ifeq ($(TARGET), sedna)
+	TARGET_XLEN			= 64
+	CFLAGS				+= -march=rv$(TARGET_XLEN)gc
+endif
+
 
 ifeq ($(TARGET), qemu-64g)
 	TARGET_XLEN			= 64
@@ -193,6 +201,7 @@ all:
 	make TARGET=qemu-32e release
 	make TARGET=qemu-32ec release
 #	make TARGET=olimex-ch32v003-uart release
+	make TARGET=sedna release
 	make TARGET=qemu-64g release
 	make TARGET=qemu-64gc release
 #	make TARGET=vf2 release
